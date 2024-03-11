@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>User Login</h2>
+        <form id="loginForm" method="POST" action="php/login.php">
+            <div>
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email">
+                <div id="emailError" class="error"></div>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+                <div id="passwordError" class="error"></div>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+            <a link href="index.html">会員登録はこちらから</a>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var emailInput = document.getElementById('email');
+    var passwordInput = document.getElementById('password');
+    var emailError = document.getElementById('emailError');
+    var passwordError = document.getElementById('passwordError');
+
+    emailInput.addEventListener('input', function() {
+        if (!emailInput.value) {
+            emailError.textContent = 'Please enter your email';
+        } else {
+            emailError.textContent = '';
+        }
+    });
+
+    passwordInput.addEventListener('input', function() {
+        if (!passwordInput.value) {
+            passwordError.textContent = 'Please enter your password';
+        } else {
+            passwordError.textContent = '';
+        }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var email = emailInput.value;
+        var password = passwordInput.value;
+
+        // 空の入力欄がある場合はアラートを表示して処理を中止
+        if (!email || !password) {
+            if (!email) {
+                emailError.textContent = 'Please enter your email';
+            }
+            if (!password) {
+                passwordError.textContent = 'Please enter your password';
+            }
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var response = xhr.responseText;
+                    if (response === 'Email not found') {
+                        emailError.textContent = 'Email not found';
+                    } else if (response === 'Incorrect password') {
+                        passwordError.textContent = 'Incorrect password';
+                    } else {
+                        window.location.href = 'main.php';
+                    }
+                }
+            }
+        };
+        xhr.open('POST', 'php/login.php');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('email=' + email + '&password=' + password);
+    });
+});
+    </script>
+
+</body>
+</html>
